@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEEN 2110 Reference Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── BASE & VARIABLES ── */
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
+  
+  /* Core Colors */
+  --bg-body: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-light: #94a3b8;
+  --border-light: #e2e8f0;
+  --border-dark: #cbd5e1;
+
+  /* Theme Colors (Tailwind inspired) */
+  --blue-bg: #eff6ff; --blue-border: #bfdbfe; --blue-text: #1e40af; --blue-solid: #3b82f6;
+  --green-bg: #f0fdf4; --green-border: #bbf7d0; --green-text: #166534; --green-solid: #22c55e;
+  --amber-bg: #fffbeb; --amber-border: #fde68a; --amber-text: #92400e; --amber-solid: #f59e0b;
+  --red-bg: #fef2f2; --red-border: #fecaca; --red-text: #991b1b; --red-solid: #ef4444;
+  --purple-bg: #eef2ff; --purple-border: #c7d2fe; --purple-text: #3730a3; --purple-solid: #6366f1;
+  --gray-bg: #f1f5f9; --gray-border: #cbd5e1; --gray-text: #334155; --gray-solid: #64748b;
+
+  /* Metrics */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --gap: 24px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --transition: all 0.2s ease;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-body);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+/* ── HERO HEADER ── */
+.hero {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-lg);
+  color: #ffffff;
+}
+.hero-left h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.hero-left p { font-size: 15px; color: #94a3b8; font-weight: 500; }
+.pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.pill { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.1); }
+.pill-b { background: rgba(59,130,246,0.2); color: #93c5fd; }
+.pill-g { background: rgba(34,197,94,0.2); color: #86efac; }
+.pill-a { background: rgba(245,158,11,0.2); color: #fcd34d; }
+.pill-r { background: rgba(239,68,68,0.2); color: #fca5a5; }
+.pill-p { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+.pill-gr{ background: rgba(100,116,139,0.3); color: #cbd5e1; }
+
+/* ── TAB NAV ── */
+.tab-wrap {
+  display: flex;
+  gap: 6px;
+  background: var(--border-light);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  margin-bottom: 32px;
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+  overflow-x: auto;
+  backdrop-filter: blur(8px);
+}
+.tab-wrap::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1;
+  min-width: max-content;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tab .ico { font-size: 16px; opacity: 0.7; font-family: var(--font-mono); }
+.tab.on { background: var(--bg-card); color: var(--blue-text); box-shadow: var(--shadow-sm); }
+.tab.on .ico { opacity: 1; color: var(--blue-solid); }
+.tab:hover:not(.on) { background: rgba(255,255,255,0.5); color: var(--text-main); }
+
+/* ── PAGES & HEADERS ── */
+.pg { display: none; animation: fadeIn 0.3s ease; }
+.pg.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.sec-hdr { margin-bottom: 24px; }
+.sec-hdr h2 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.01em; }
+.sec-hdr p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+.sec-hdr .acc { height: 4px; border-radius: 4px; margin-top: 16px; width: 60px; }
+
+/* ── CARDS & GRIDS ── */
+.g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+.g3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+.wide { grid-column: 1 / -1; }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+.card:hover { box-shadow: var(--shadow-md); border-color: var(--border-dark); }
+.card-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.card-sub { font-size: 13px; color: var(--text-muted); margin-left: auto; font-weight: 500; }
+
+/* ── BADGES ── */
+.badge {
+  font-size: 12px; font-weight: 700; padding: 6px 12px;
+  border-radius: 6px; white-space: nowrap; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.b-blue { background: var(--blue-bg); color: var(--blue-text); border: 1px solid var(--blue-border); }
+.b-green{ background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
+.b-amber{ background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber-border); }
+.b-red  { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
+.b-purple{ background: var(--purple-bg); color: var(--purple-text); border: 1px solid var(--purple-border); }
+.b-gray { background: var(--gray-bg); color: var(--gray-text); border: 1px solid var(--gray-border); }
+
+/* ── CONTENT TYPOGRAPHY ── */
+.lbl {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; 
+  letter-spacing: 0.08em; color: var(--text-light); margin-bottom: 6px;
+}
+.val { font-size: 14px; color: var(--text-main); line-height: 1.6; }
+.div { height: 1px; background: var(--border-light); margin: 20px 0; }
+
+/* ── FORMULAS (DARK MODE) ── */
+.formula {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  line-height: 1.6;
+  margin-top: 4px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  white-space: pre-wrap; /* Crucial for mathematical alignment */
+  overflow-x: auto;
+}
+.formula .hl { color: #60a5fa; font-weight: 700; }
+.formula .hla { color: #fbbf24; font-weight: 700; }
+.formula .hlr { color: #f87171; font-weight: 700; }
+.formula .hlg { color: #34d399; font-weight: 700; }
+
+/* ── TIPS & HIGHLIGHT BOXES ── */
+.tip {
+  font-size: 13.5px; color: var(--text-muted); font-weight: 500;
+  background: var(--bg-body);
+  border-left: 4px solid var(--blue-solid);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 18px; margin-top: 16px; line-height: 1.6;
+}
+.tip.g { border-left-color: var(--green-solid); }
+.tip.a { border-left-color: var(--amber-solid); }
+.tip.r { border-left-color: var(--red-solid); }
+.tip.p { border-left-color: var(--purple-solid); }
+
+.hbox {
+  border-radius: var(--radius-sm); padding: 14px 18px; margin-top: 12px;
+  font-size: 14px; font-weight: 500; border: 1px solid;
+}
+.hbox.b { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue-text); }
+.hbox.g { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
+
+/* ── LISTS ── */
+.flag { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; margin-top: 8px; }
+.fdot { width: 6px; height: 6px; border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+.fd-b { background: var(--blue-solid); }
+.fd-g { background: var(--green-solid); }
+.fd-a { background: var(--amber-solid); }
+.fd-r { background: var(--red-solid); }
+.fd-p { background: var(--purple-solid); }
+.fd-gr{ background: var(--gray-solid); }
+
+/* ── FLOW DIAGRAMS ── */
+.flow-row {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: nowrap; overflow-x: auto;
+  padding: 20px;
+  background: var(--bg-body);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin: 12px 0 24px;
+}
+.flow-row::-webkit-scrollbar { display: none; }
+.fnode {
+  font-size: 13px; font-weight: 600; padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dark);
+  background: var(--bg-card);
+  color: var(--text-main);
+  white-space: nowrap; flex-shrink: 0; text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.fnode .fsub { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: 4px; }
+.farr { font-size: 18px; color: var(--text-light); padding: 0 4px; font-weight: bold; }
+.fnode.b { border-color: var(--blue-border); background: var(--blue-bg); color: var(--blue-text); }
+.fnode.g { border-color: var(--green-border); background: var(--green-bg); color: var(--green-text); }
+.fnode.a { border-color: var(--amber-border); background: var(--amber-bg); color: var(--amber-text); }
+.fnode.r { border-color: var(--red-border); background: var(--red-bg); color: var(--red-text); }
+.fnode.p { border-color: var(--purple-border); background: var(--purple-bg); color: var(--purple-text); }
+.fnode.dim { opacity: 0.7; background: transparent; border-color: transparent; box-shadow: none; }
+
+/* ── TABLES ── */
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+.cmp-table th {
+  padding: 12px 16px; text-align: left;
+  background: var(--bg-body);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border-dark);
+}
+.cmp-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top; line-height: 1.6;
+}
+.cmp-table tr:hover td { background: rgba(241, 245, 249, 0.5); }
+.tag { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; display: inline-block; }
+
+/* ── BIG NUMBERS ── */
+.kv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; margin-top: 12px; }
+.kv {
+  background: var(--bg-body); border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm); padding: 16px 12px; text-align: center;
+}
+.kv-num { font-size: 20px; font-weight: 700; color: var(--text-main); font-family: var(--font-mono); }
+.kv-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-top: 6px; }
+
+/* Media Queries for tight spaces */
+@media (max-width: 768px) {
+  .hero { padding: 24px; }
+  .tab-wrap { padding: 4px; }
+  .tab { padding: 10px 12px; font-size: 12px; }
+  .card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">MEEN 2110 statistical method decision guide — interactive reference for all final exam topics</h2>
+
+<div class="wrap">
+
+<!-- hero -->
+<div class="hero">
+  <div class="hero-left">
+    <h1>MEEN 2110 — Method Reference Guide</h1>
+    <p>Engineering Data Analysis &nbsp;·&nbsp; All final exam topics &nbsp;·&nbsp; Montgomery &amp; Runger</p>
+    <div class="pills">
+      <span class="pill pill-b">Ch 2 Probability</span>
+      <span class="pill pill-b">Ch 2 Counting</span>
+      <span class="pill pill-g">Ch 3–4 Distributions</span>
+      <span class="pill pill-a">Ch 4 Normal</span>
+      <span class="pill pill-r">Ch 7 Sample Stats</span>
+      <span class="pill pill-p">Ch 8 CI</span>
+      <span class="pill pill-gr">Ch 9–10 Tests</span>
+    </div>
+  </div>
+</div>
+
+<!-- tabs -->
+<div class="tab-wrap">
+  <button class="tab on" onclick="show(0)"><span class="ico">⊕</span>Probability</button>
+  <button class="tab" onclick="show(1)"><span class="ico">𝑛!</span>Counting</button>
+  <button class="tab" onclick="show(2)"><span class="ico">𝑋</span>Rand. Vars</button>
+  <button class="tab" onclick="show(3)"><span class="ico">∿</span>Distributions</button>
+  <button class="tab" onclick="show(4)"><span class="ico">CI</span>Conf. Intervals</button>
+  <button class="tab" onclick="show(5)"><span class="ico">H₀</span>Hyp. Tests</button>
+  <button class="tab" onclick="show(6)"><span class="ico">▦</span>Tables</button>
+</div>
+
+<!-- ══ PAGE 0: PROBABILITY ══ -->
+<div class="pg active" id="pg0">
+  <div class="sec-hdr">
+    <h2>Probability &amp; Set Theory</h2>
+    <p>The four rules that underpin every topic on this exam — know these cold.</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--blue-solid),#85B7EB)"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><span class="badge b-blue">Addition Rule</span><span class="card-sub">P(A ∪ B)</span></div>
+      <div class="lbl">Use when</div>
+      <div class="val">You need P(A <b>or</b> B or both). The inclusion-exclusion principle removes double-counting.</div>
+      <div class="div"></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hl">P(A∪B) = P(A) + P(B) − P(A∩B)</span>
+If mutually exclusive: P(A∩B)=0
+→ P(A∪B) = P(A) + P(B)</div>
+      <div class="div"></div>
+      <div class="lbl">Three events (inclusion-exclusion)</div>
+      <div class="formula">P(A∪B∪C) = P(A)+P(B)+P(C)
+         −P(A∩B)−P(A∩C)−P(B∩C)
+         +P(A∩B∩C)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr"><span class="badge b-blue">Multiplication Rule</span><span class="card-sub">P(A ∩ B)</span></div>
+      <div class="lbl">Use when</div>
+      <div class="val">You need P(A <b>and</b> B both happen). Depends on whether A and B are independent.</div>
+      <div class="div"></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hl">P(A∩B) = P(B|A) · P(A)</span>
+If independent: P(A∩B) = P(A)·P(B)
+De Morgan:  (A∪B)' = A'∩B'
+            (A∩B)' = A'∪B'</div>
+      <div class="div"></div>
+      <div class="lbl">Independence test</div>
+      <div class="formula">A,B independent ⟺ P(A∩B)=P(A)·P(B)
+                       ⟺ P(A|B)=P(A)</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><span class="badge b-purple">Total Probability</span><span class="card-sub">P(B) via partitions</span></div>
+      <div class="lbl">Use when</div>
+      <div class="val">B can happen through multiple mutually exclusive paths E₁,E₂,…Eₖ. You know P(B|Eᵢ) and P(Eᵢ).</div>
+      <div class="div"></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hl">P(B) = Σ P(B|Eᵢ)·P(Eᵢ)</span>
+         = P(B|E₁)P(E₁)+P(B|E₂)P(E₂)+…</div>
+      <div class="tip g">Step 1 before Bayes — always compute P(B) first using Total Probability.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr"><span class="badge b-purple">Bayes' Theorem</span><span class="card-sub">Reverse conditioning</span></div>
+      <div class="lbl">Use when</div>
+      <div class="val">You know P(B|A) but want P(A|B). Classic form: "given the outcome, what caused it?"</div>
+      <div class="div"></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hl">P(Eᵢ|B) = P(B|Eᵢ)·P(Eᵢ) / P(B)</span></div>
+      <div class="div"></div>
+      <div class="lbl">Workflow</div>
+      <div class="flow-row" style="margin-top:0;padding:10px 16px">
+        <div class="fnode">List P(Eᵢ)<div class="fsub">priors</div></div>
+        <div class="farr">→</div>
+        <div class="fnode">List P(B|Eᵢ)<div class="fsub">likelihoods</div></div>
+        <div class="farr">→</div>
+        <div class="fnode b">Compute P(B)<div class="fsub">total prob.</div></div>
+        <div class="farr">→</div>
+        <div class="fnode p">Apply Bayes<div class="fsub">posterior</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-gray">Conditional Probability</span><span class="card-sub">Reading from contingency tables</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">Formula</div>
+        <div class="formula"><span class="hl">P(B|A) = P(A∩B) / P(A)</span>
+P(A'∩B') = 1 − P(A∪B)  ← De Morgan shortcut
+P(A|B') = P(A∩B') / P(B') = [P(A)−P(A∩B)] / [1−P(B)]</div>
+      </div>
+      <div>
+        <div class="lbl">Contingency table tip</div>
+        <div class="val" style="margin-top:0">For a table with row totals and column totals, read P(A∩B) as the cell count / grand total, and condition by dividing by the appropriate marginal total. Always check whether independence holds: P(A)×P(B) =? P(A∩B).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 1: COUNTING ══ -->
+<div class="pg" id="pg1">
+  <div class="sec-hdr">
+    <h2>Permutations &amp; Combinations</h2>
+    <p>The only question that matters: does order matter?</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--blue-solid),var(--green-solid))"></div>
+  </div>
+
+  <div class="flow-row">
+    <div class="fnode">Start here<div class="fsub">n objects, choose r</div></div>
+    <div class="farr">→</div>
+    <div class="fnode">Does order matter?</div>
+    <div class="farr">→</div>
+    <div class="fnode b">YES → Permutation<div class="fsub">P(n,r) = n!/(n-r)!</div></div>
+    <div class="farr">/</div>
+    <div class="fnode g">NO → Combination<div class="fsub">C(n,r) = n!/[r!(n-r)!]</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><span class="badge b-blue">Permutation  P(n,r)</span></div>
+      <div class="lbl">When to use</div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Ranking contestants (1st, 2nd, 3rd)</div></div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Arranging objects in a specific sequence</div></div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Ordered codes where position matters</div></div>
+      <div class="div"></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hl">P(n,r) = n! / (n−r)!</span>
+All n objects: n! arrangements</div>
+      <div class="div"></div>
+      <div class="lbl">Trigger keywords</div>
+      <div class="val">"arrange", "order", "sequence", "award 1st/2nd", "how many ways to line up"</div>
+      <div class="tip">P(12,3) = 12×11×10 = 1,320 ways to pick gold/silver/bronze from 12 athletes.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr"><span class="badge b-green">Combination  C(n,r)</span></div>
+      <div class="lbl">When to use</div>
+      <div class="flag"><div class="fdot fd-g"></div><div>Selecting a team/committee/group</div></div>
+      <div class="flag"><div class="fdot fd-g"></div><div>Choosing items where position is irrelevant</div></div>
+      <div class="flag"><div class="fdot fd-g"></div><div>Sampling without replacement (unordered)</div></div>
+      <div class="div"></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hlg">C(n,r) = n! / [r!·(n−r)!]</span>
+Also written as  ⁿCᵣ  or  (n choose r)</div>
+      <div class="div"></div>
+      <div class="lbl">Trigger keywords</div>
+      <div class="val">"choose", "select", "team of", "committee", "subset", "sample of r from n"</div>
+      <div class="tip g">C(9,4) = 9×8×7×6 / 4! = 126 ways to pick a 4-person team from 9 engineers.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-amber">Special Cases &amp; Tricks</span></div>
+    <div class="g3" style="margin-bottom:0">
+      <div>
+        <div class="lbl">Multiplication principle</div>
+        <div class="val">Multi-step independent choices: multiply the options at each step.</div>
+        <div class="formula">PINs (4 digits, repeat OK):
+10×10×10×10 = 10⁴ = 10,000</div>
+      </div>
+      <div>
+        <div class="lbl">Adjacent objects constraint</div>
+        <div class="val">Treat the adjacent group as one super-object, then multiply by internal arrangements.</div>
+        <div class="formula">7 reports, 2 must be adjacent:
+6! × 2! = 720 × 2 = 1,440</div>
+      </div>
+      <div>
+        <div class="lbl">No repetition</div>
+        <div class="val">Each item used at most once — reduces options at each step.</div>
+        <div class="formula">4-digit PIN, no repeat:
+10×9×8×7 = P(10,4) = 5,040</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 2: RANDOM VARIABLES ══ -->
+<div class="pg" id="pg2">
+  <div class="sec-hdr">
+    <h2>Random Variables — Discrete vs Continuous</h2>
+    <p>Determine this first — it controls which formulas, which distributions, and which tables apply.</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--blue-solid),var(--red-solid))"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--blue-solid)">
+      <div class="card-hdr"><span class="badge b-blue">Discrete Random Variable</span></div>
+      <div class="lbl">Definition</div>
+      <div class="val">Takes countable values — usually non-negative integers. Gaps exist between values.</div>
+      <div class="div"></div>
+      <div class="lbl">Recognition</div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Number of defects, calls, failures, accidents</div></div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Count of items satisfying a condition</div></div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Result of rolling dice, coin flips</div></div>
+      <div class="div"></div>
+      <div class="lbl">Key functions</div>
+      <div class="formula">PMF:  f(x) = P(X=x) ≥ 0,  Σf(x)=1
+CDF:  F(x) = P(X≤x) = Σ_{t≤x} f(t)
+Mean: E(X) = Σ x·f(x)
+Var:  V(X) = Σx²f(x) − [E(X)]²</div>
+      <div class="div"></div>
+      <div class="lbl">Distributions on this exam</div>
+      <div class="hbox b">Discrete Uniform · Binomial · Poisson</div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--green-solid)">
+      <div class="card-hdr"><span class="badge b-green">Continuous Random Variable</span></div>
+      <div class="lbl">Definition</div>
+      <div class="val">Takes any value in an interval. P(X = exact value) = 0 always — use intervals.</div>
+      <div class="div"></div>
+      <div class="lbl">Recognition</div>
+      <div class="flag"><div class="fdot fd-g"></div><div>Time, distance, weight, temperature, current</div></div>
+      <div class="flag"><div class="fdot fd-g"></div><div>Physical measurements on a continuous scale</div></div>
+      <div class="flag"><div class="fdot fd-g"></div><div>"How long until…", "the strength of…"</div></div>
+      <div class="div"></div>
+      <div class="lbl">Key functions</div>
+      <div class="formula">PDF:  f(x) ≥ 0,  ∫f(x)dx = 1
+CDF:  F(x) = P(X≤x) = ∫_{-∞}^{x} f(t)dt
+Mean: E(X) = ∫ x·f(x)dx
+Var:  V(X) = ∫x²f(x)dx − [E(X)]²</div>
+      <div class="div"></div>
+      <div class="lbl">Distributions on this exam</div>
+      <div class="hbox g">Continuous Uniform · Exponential · Gamma/Erlang · Normal</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-gray">Sample Statistics  (Ch 7)</span><span class="card-sub">from data, not a distribution</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">Sample mean  x̄</div>
+        <div class="formula"><span class="hl">x̄ = (Σ xᵢ) / n</span></div>
+        <div class="lbl" style="margin-top:20px">Sample variance  s²</div>
+        <div class="formula"><span class="hl">s² = Σ(xᵢ − x̄)² / (n−1)</span>
+Use n−1 (Bessel's correction, unbiased)
+s = √s²  is the sample std dev</div>
+      </div>
+      <div>
+        <div class="lbl">When to use sample vs population</div>
+        <div class="val" style="margin-top:0">Use <b>x̄, s²</b> when you have data points and must estimate the population parameters. Use <b>μ, σ²</b> only when they are explicitly given as known population values (rare in practice).</div>
+        <div class="tip" style="margin-top:16px">Degrees of freedom = n−1. This appears in t-tables and chi-squared tables.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-amber">Cumulative Distribution Function — CDF</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">For any random variable</div>
+        <div class="formula">F(x) = P(X ≤ x)
+P(a &lt; X ≤ b) = F(b) − F(a)
+P(X > a) = 1 − F(a)</div>
+      </div>
+      <div>
+        <div class="lbl">Building discrete CDF</div>
+        <div class="val">List all x values in order. F(x₀) = f(x₀), F(x₁) = f(x₀)+f(x₁), etc. F is a step function — constant between values, jumps at each x.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 3: DISTRIBUTIONS ══ -->
+<div class="pg" id="pg3">
+  <div class="sec-hdr">
+    <h2>Choosing the Right Distribution</h2>
+    <p>Match the scenario description to the model — keywords are your guide.</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--blue-solid),var(--purple-solid),var(--red-solid))"></div>
+  </div>
+
+  <!-- quick picker -->
+  <div class="flow-row">
+    <div class="fnode dim">Scenario?</div><div class="farr">→</div>
+    <div class="fnode b">n trials, count successes<div class="fsub">Binomial</div></div><div class="farr">|</div>
+    <div class="fnode g">Events/time or space<div class="fsub">Poisson</div></div><div class="farr">|</div>
+    <div class="fnode a">Wait for 1st event<div class="fsub">Exponential</div></div><div class="farr">|</div>
+    <div class="fnode r">Wait for r-th event<div class="fsub">Gamma/Erlang</div></div><div class="farr">|</div>
+    <div class="fnode p">Measurement data<div class="fsub">Normal</div></div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--blue-solid)">
+    <div class="card-hdr"><span class="badge b-blue">Binomial Distribution  B(n, p)</span><span class="card-sub">Discrete</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">When to use — ALL must hold</div>
+        <div class="flag"><div class="fdot fd-b"></div><div>Fixed number of trials n</div></div>
+        <div class="flag"><div class="fdot fd-b"></div><div>Each trial: success (prob p) or failure (1−p)</div></div>
+        <div class="flag"><div class="fdot fd-b"></div><div>Trials are independent</div></div>
+        <div class="flag"><div class="fdot fd-b"></div><div>Counting total successes X</div></div>
+        <div class="div"></div>
+        <div class="lbl">Keywords</div>
+        <div class="val">"defective rate p", "probability each item fails", "n items tested", "sample of n parts"</div>
+      </div>
+      <div>
+        <div class="lbl">Formulas</div>
+        <div class="formula"><span class="hl">f(x) = C(n,x)·pˣ·(1−p)ⁿ⁻ˣ</span>
+E(X) = np
+V(X) = np(1−p)
+
+P(X≤k): sum f(x) for x=0 to k
+P(X≥k): 1 − P(X≤k−1)
+P(X>k):  1 − P(X≤k)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--green-solid)">
+    <div class="card-hdr"><span class="badge b-green">Poisson Distribution  Pois(λT)</span><span class="card-sub">Discrete</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">When to use</div>
+        <div class="flag"><div class="fdot fd-g"></div><div>Counting events in a fixed interval of time or space</div></div>
+        <div class="flag"><div class="fdot fd-g"></div><div>Events occur at a constant average rate λ</div></div>
+        <div class="flag"><div class="fdot fd-g"></div><div>Events are independent of each other</div></div>
+        <div class="div"></div>
+        <div class="lbl">Keywords</div>
+        <div class="val">"rate of λ per hour", "arrivals per minute", "faults per km", "calls per day"</div>
+      </div>
+      <div>
+        <div class="lbl">Formulas</div>
+        <div class="formula"><span class="hlg">P(X=x) = e⁻λᵀ·(λT)ˣ / x!</span>
+E(X) = V(X) = λT
+
+⚠ Always scale λ by T:
+  λ=4/hr, T=30min → λT=4×0.5=2
+  λ=4/hr, T=2hr   → λT=4×2=8</div>
+      </div>
+    </div>
+    <div class="tip g">Mean = Variance for Poisson. If the problem gives mean = variance, it's a Poisson signal.</div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--amber-solid)">
+    <div class="card-hdr"><span class="badge b-amber">Exponential Distribution  Exp(λ)</span><span class="card-sub">Continuous</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">When to use</div>
+        <div class="flag"><div class="fdot fd-a"></div><div>Time/distance until the FIRST event</div></div>
+        <div class="flag"><div class="fdot fd-a"></div><div>Memoryless property (future independent of past)</div></div>
+        <div class="flag"><div class="fdot fd-a"></div><div>Companion to the Poisson process</div></div>
+        <div class="div"></div>
+        <div class="lbl">Keywords</div>
+        <div class="val">"lifetime", "time between failures", "time until next arrival", "mean life = X hrs", "failure rate"</div>
+      </div>
+      <div>
+        <div class="lbl">Formulas</div>
+        <div class="formula"><span class="hla">f(x) = λ·e^(−λx),  x > 0</span>
+<span class="hla">F(x) = 1 − e^(−λx)</span>
+E(X) = 1/λ  ← mean given, find λ!
+V(X) = 1/λ²
+
+P(X&gt;x)  = e^(−λx)
+P(a&lt;X&lt;b) = e^(−λa) − e^(−λb)</div>
+      </div>
+    </div>
+    <div class="tip a">If mean = 1200 hrs, then λ = 1/1200. If rate = λ, then mean = 1/λ. Always find λ first.</div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--red-solid)">
+    <div class="card-hdr"><span class="badge b-red">Gamma / Erlang Distribution  Γ(r, λ)</span><span class="card-sub">Continuous</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">When to use</div>
+        <div class="flag"><div class="fdot fd-r"></div><div>Time until the r-th event occurs</div></div>
+        <div class="flag"><div class="fdot fd-r"></div><div>Sum of r independent Exp(λ) random variables</div></div>
+        <div class="flag"><div class="fdot fd-r"></div><div>Erlang: r is a positive integer (special case)</div></div>
+        <div class="div"></div>
+        <div class="lbl">Keywords</div>
+        <div class="val">"r stages each exp distributed", "total time for 3 phases", "time until 5th failure"</div>
+      </div>
+      <div>
+        <div class="lbl">Formulas</div>
+        <div class="formula"><span class="hlr">f(x) = λʳ·x^(r−1)·e^(−λx) / Γ(r)</span>
+E(X) = r/λ
+V(X) = r/λ²
+
+Gamma function:
+Γ(n) = (n−1)!   for integer n
+Γ(½) = √π       key value!
+Γ(r) = (r−1)·Γ(r−1)   recurrence</div>
+      </div>
+    </div>
+    <div class="tip r">Gamma function examples: Γ(6)=5!=120, Γ(7/2)=(5/2)(3/2)(1/2)√π=15√π/8≈3.323</div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--purple-solid)">
+    <div class="card-hdr"><span class="badge b-purple">Normal Distribution  N(μ, σ²)</span><span class="card-sub">Continuous</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">When to use</div>
+        <div class="flag"><div class="fdot fd-p"></div><div>Measurement data (strength, weight, dimension)</div></div>
+        <div class="flag"><div class="fdot fd-p"></div><div>Problem states "normally distributed"</div></div>
+        <div class="flag"><div class="fdot fd-p"></div><div>Large samples (CLT makes x̄ approx. normal)</div></div>
+        <div class="div"></div>
+        <div class="lbl">Keywords</div>
+        <div class="val">"normally distributed with mean μ and σ", "tensile strength", "diameter", physical measurements</div>
+      </div>
+      <div>
+        <div class="lbl">Standardize → use Z-table</div>
+        <div class="formula"><span class="hl">Z = (X − μ) / σ</span>
+P(X&lt;a)   = Φ(z_a)
+P(X&gt;a)   = 1 − Φ(z_a)
+P(a&lt;X&lt;b) = Φ(z_b) − Φ(z_a)
+
+For z &lt; 0: Φ(−z) = 1−Φ(z)
+
+Percentiles: x = μ + z·σ
+  90th pct: z=1.282
+  95th pct: z=1.645
+  97.5th pct: z=1.960</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-gray">Discrete Uniform Distribution</span><span class="card-sub">Equal probability on each value</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">Use when</div>
+        <div class="val">Each of k outcomes is equally likely (die, spinner, lottery ball).</div>
+        <div class="formula">f(x) = 1/k  for each outcome
+E(X) = (a+b)/2   (for values a to b)
+V(X) = (b−a+1)²−1 / 12</div>
+      </div>
+      <div>
+        <div class="lbl">Continuous Uniform</div>
+        <div class="val">X equally likely on the interval [a, b].</div>
+        <div class="formula">f(x) = 1/(b−a),  a≤x≤b
+E(X) = (a+b)/2
+V(X) = (b−a)²/12</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 4: CI ══ -->
+<div class="pg" id="pg4">
+  <div class="sec-hdr">
+    <h2>Confidence Intervals</h2>
+    <p>The σ-known question is the main decision fork. Everything else follows from it.</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--purple-solid),var(--red-solid))"></div>
+  </div>
+
+  <div class="flow-row">
+    <div class="fnode dim">What to estimate?</div><div class="farr">→</div>
+    <div class="fnode b">μ, σ known<div class="fsub">Z-CI</div></div><div class="farr">|</div>
+    <div class="fnode a">μ, σ unknown<div class="fsub">t-CI</div></div><div class="farr">|</div>
+    <div class="fnode r">σ² or σ<div class="fsub">χ²-CI</div></div><div class="farr">|</div>
+    <div class="fnode g">Compare 2 variances<div class="fsub">F-CI / F-test</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--blue-solid)">
+      <div class="card-hdr"><span class="badge b-blue">Z-CI for μ &nbsp;(σ known)</span></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hl">x̄ ± z_{α/2} · (σ/√n)</span>
+Two-sided: (x̄−ME, x̄+ME)
+Upper bound only: μ ≤ x̄ + z_α·(σ/√n)
+Lower bound only: μ ≥ x̄ − z_α·(σ/√n)</div>
+      <div class="div"></div>
+      <div class="lbl">Critical values  z_{α/2}</div>
+      <div class="kv-grid">
+        <div class="kv"><div class="kv-num">1.645</div><div class="kv-lbl">90% CI</div></div>
+        <div class="kv"><div class="kv-num">1.960</div><div class="kv-lbl">95% CI</div></div>
+        <div class="kv"><div class="kv-num">2.326</div><div class="kv-lbl">99% one-sided</div></div>
+        <div class="kv"><div class="kv-num">2.576</div><div class="kv-lbl">99% CI</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--amber-solid)">
+      <div class="card-hdr"><span class="badge b-amber">t-CI for μ &nbsp;(σ unknown)</span></div>
+      <div class="lbl">Formula</div>
+      <div class="formula"><span class="hla">x̄ ± t_{α/2, n−1} · (s/√n)</span>
+ν = n−1  degrees of freedom
+SE = s/√n  (standard error)
+ME = t_{α/2,ν} × SE</div>
+      <div class="div"></div>
+      <div class="lbl">One-sided bounds</div>
+      <div class="formula">Upper: μ ≤ x̄ + t_{α,n−1}·(s/√n)
+Lower: μ ≥ x̄ − t_{α,n−1}·(s/√n)
+⚠ Use t_α not t_{α/2} for one-sided!</div>
+      <div class="tip a">σ unknown is the default in real life. If the problem doesn't say σ is known, use t.</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--red-solid)">
+      <div class="card-hdr"><span class="badge b-red">χ²-CI for σ² &nbsp;(variance)</span></div>
+      <div class="lbl">Two-sided CI formula</div>
+      <div class="formula"><span class="hlr">(n−1)s² / χ²_{α/2,n−1}  ≤  σ²  ≤  (n−1)s² / χ²_{1−α/2,n−1}</span>
+ν = n−1
+Lower limit uses the LARGER χ² value
+Upper limit uses the SMALLER χ² value</div>
+      <div class="div"></div>
+      <div class="lbl">One-sided bounds</div>
+      <div class="formula">Upper bound: σ² ≤ (n−1)s² / χ²_{1−α,n−1}
+Lower bound: σ² ≥ (n−1)s² / χ²_{α,n−1}</div>
+      <div class="tip r">χ² is NOT symmetric — always look up BOTH critical values separately. Common mistake: using one value for both limits.</div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--green-solid)">
+      <div class="card-hdr"><span class="badge b-green">Sample Size Formula</span></div>
+      <div class="lbl">When you need to find n given E and confidence</div>
+      <div class="formula"><span class="hlg">n = (z_{α/2} · σ / E)²</span>
+E = margin of error (half-width of CI)
+σ = known (or estimated) std dev
+Always ROUND UP to next integer!
+
+Example: 99% CI, E=0.10, σ=0.40:
+n = (2.576×0.40/0.10)² = (10.304)²
+  = 106.17 → n = 107</div>
+      <div class="tip g">If σ is unknown, use a preliminary estimate or past study value. The formula gives a minimum n.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-gray">CI Quick Comparison</span></div>
+    <div style="overflow-x:auto">
+    <table class="cmp-table">
+      <thead><tr><th>Scenario</th><th>Statistic</th><th>Formula</th><th>Table</th><th>d.f.</th></tr></thead>
+      <tbody>
+        <tr><td>μ, σ known</td><td><span class="tag b-blue">Z</span></td><td>x̄ ± z_{α/2}·σ/√n</td><td>Z (Table III)</td><td>—</td></tr>
+        <tr><td>μ, σ unknown</td><td><span class="tag b-amber">t</span></td><td>x̄ ± t_{α/2,ν}·s/√n</td><td>t (Table V)</td><td>n−1</td></tr>
+        <tr><td>σ² (variance)</td><td><span class="tag b-red">χ²</span></td><td>(n−1)s²/χ²_{α/2} to (n−1)s²/χ²_{1−α/2}</td><td>χ² (Table IV)</td><td>n−1</td></tr>
+        <tr><td>Confidence level from interval</td><td><span class="tag b-blue">Z</span></td><td>1−α = 2Φ(z) − 1</td><td>Z (Table III)</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 5: HYPOTHESIS TESTS ══ -->
+<div class="pg" id="pg5">
+  <div class="sec-hdr">
+    <h2>Hypothesis Tests</h2>
+    <p>Always state H₀ and Hₐ first, compute the test statistic, then compare to the critical value.</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--red-solid),var(--purple-solid))"></div>
+  </div>
+
+  <div class="flow-row">
+    <div class="fnode dim">What are you testing?</div><div class="farr">→</div>
+    <div class="fnode b">1 mean, σ known<div class="fsub">Z-test</div></div><div class="farr">|</div>
+    <div class="fnode a">1 mean, σ unknown<div class="fsub">t-test</div></div><div class="farr">|</div>
+    <div class="fnode g">2 means<div class="fsub">2-sample t</div></div><div class="farr">|</div>
+    <div class="fnode r">1 or 2 variances<div class="fsub">χ² or F-test</div></div><div class="farr">|</div>
+    <div class="fnode p">Proportions / GOF<div class="fsub">χ² GOF</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--blue-solid)">
+      <div class="card-hdr"><span class="badge b-blue">One-Sample Z-test</span><span class="card-sub">σ known</span></div>
+      <div class="lbl">Hypotheses</div>
+      <div class="formula">H₀: μ = μ₀   vs
+(a) Hₐ: μ ≠ μ₀  (two-sided)
+(b) Hₐ: μ &lt; μ₀  (left-tailed)
+(c) Hₐ: μ &gt; μ₀  (right-tailed)</div>
+      <div class="div"></div>
+      <div class="lbl">Test statistic &amp; rejection</div>
+      <div class="formula"><span class="hl">Z₀ = (x̄ − μ₀) / (σ/√n)</span>
+Two-sided:   reject if |Z₀| &gt; z_{α/2}
+Left-tailed: reject if Z₀ &lt; −z_α
+Right-tailed:reject if Z₀ &gt; z_α</div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--amber-solid)">
+      <div class="card-hdr"><span class="badge b-amber">One-Sample t-test</span><span class="card-sub">σ unknown — most common!</span></div>
+      <div class="lbl">Test statistic &amp; rejection</div>
+      <div class="formula"><span class="hla">t₀ = (x̄ − μ₀) / (s/√n)</span>
+ν = n−1  degrees of freedom
+
+Two-sided:   reject if |t₀| &gt; t_{α/2,ν}
+Left-tailed: reject if t₀ &lt; −t_{α,ν}
+Right-tailed:reject if t₀ &gt; t_{α,ν}</div>
+      <div class="tip a">Workflow: state H₀ → compute x̄ and s from data → plug into t₀ → look up t-table → conclude.</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--green-solid)">
+    <div class="card-hdr"><span class="badge b-green">Two-Sample t-test</span><span class="card-sub">Comparing two population means</span></div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="lbl">Step 1 — F-test for equal variances first!</div>
+        <div class="formula"><span class="hlg">F₀ = s₁²/s₂²   (put larger on top)</span>
+Reject H₀: σ₁²=σ₂² if F₀ &gt; f_{α/2,n₁−1,n₂−1}</div>
+        <div class="div"></div>
+        <div class="lbl">Step 2a — Equal variances (pooled)</div>
+        <div class="formula">Sₚ² = [(n₁−1)s₁²+(n₂−1)s₂²]/(n₁+n₂−2)
+t₀ = (x̄₁−x̄₂) / [Sₚ√(1/n₁+1/n₂)]
+ν  = n₁+n₂−2</div>
+      </div>
+      <div>
+        <div class="lbl">Step 2b — Unequal variances (Welch)</div>
+        <div class="formula">t₀ = (x̄₁−x̄₂) / √(s₁²/n₁+s₂²/n₂)
+ν  = (s₁²/n₁+s₂²/n₂)²
+     / [(s₁²/n₁)²/(n₁−1) + (s₂²/n₂)²/(n₂−1)]</div>
+        <div class="div"></div>
+        <div class="lbl">Rejection for both</div>
+        <div class="formula">H₀: μ₁=μ₂   H₁: μ₁≠μ₂
+Reject if |t₀| &gt; t_{α/2,ν}
+H₁: μ₁&gt;μ₂: reject if t₀ &gt; t_{α,ν}</div>
+      </div>
+    </div>
+    <div class="tip g">ALWAYS do the F-test first — it tells you whether to use pooled or Welch. Skipping it is a common exam error.</div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--red-solid)">
+      <div class="card-hdr"><span class="badge b-red">F-test for Variances</span><span class="card-sub">Compare σ₁² vs σ₂²</span></div>
+      <div class="lbl">Hypotheses &amp; statistic</div>
+      <div class="formula"><span class="hlr">F₀ = s₁²/s₂²</span>
+H₀: σ₁²=σ₂²
+
+Two-sided: reject if F₀ &gt; f_{α/2,n₁−1,n₂−1}
+Right-tail: reject if F₀ &gt; f_{α,n₁−1,n₂−1}
+Left-tail:  use 1/F₀ and swap d.f.</div>
+      <div class="div"></div>
+      <div class="lbl">Notes</div>
+      <div class="val">Table only gives upper tail. For two-sided at α, look up f_{α/2,ν₁,ν₂}. ν₁=n₁−1 (numerator), ν₂=n₂−1 (denominator).</div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--red-solid)">
+      <div class="card-hdr"><span class="badge b-red">Chi-Squared Tests</span><span class="card-sub">Two distinct uses!</span></div>
+      <div class="lbl">Use 1 — Test one variance vs target σ₀²</div>
+      <div class="formula"><span class="hlr">χ₀² = (n−1)s² / σ₀²</span>
+ν=n−1
+Reject H₀:σ²=σ₀² if χ₀²&gt;χ²_{α/2,ν} or &lt;χ²_{1−α/2,ν}</div>
+      <div class="div"></div>
+      <div class="lbl">Use 2 — Goodness-of-fit (proportions equal?)</div>
+      <div class="formula"><span class="hlr">χ₀² = Σ (Oᵢ − Eᵢ)² / Eᵢ</span>
+Eᵢ = expected count (e.g. n/k if equal)
+ν = k−1  (k = number of categories)
+Reject H₀ if χ₀² &gt; χ²_{α,ν}</div>
+      <div class="tip r">GOF is one-sided — only a large χ₀² is evidence against H₀. Always right-tail rejection.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-gray">Hypothesis Test Quick Reference</span></div>
+    <div style="overflow-x:auto">
+    <table class="cmp-table">
+      <thead><tr><th>Test</th><th>H₀</th><th>Statistic</th><th>d.f.</th><th>Table</th></tr></thead>
+      <tbody>
+        <tr><td>One-sample Z (σ known)</td><td>μ=μ₀</td><td>Z₀=(x̄−μ₀)/(σ/√n)</td><td>—</td><td>Z</td></tr>
+        <tr><td>One-sample t (σ unknown)</td><td>μ=μ₀</td><td>t₀=(x̄−μ₀)/(s/√n)</td><td>n−1</td><td>t</td></tr>
+        <tr><td>Two-sample t (equal var)</td><td>μ₁=μ₂</td><td>t₀=(x̄₁−x̄₂)/[Sₚ√(1/n₁+1/n₂)]</td><td>n₁+n₂−2</td><td>t</td></tr>
+        <tr><td>Two-sample t (unequal var)</td><td>μ₁=μ₂</td><td>t₀=(x̄₁−x̄₂)/√(s₁²/n₁+s₂²/n₂)</td><td>Welch df</td><td>t</td></tr>
+        <tr><td>F-test (equal variances)</td><td>σ₁²=σ₂²</td><td>F₀=s₁²/s₂²</td><td>n₁−1, n₂−1</td><td>F</td></tr>
+        <tr><td>Chi-squared (one variance)</td><td>σ²=σ₀²</td><td>χ₀²=(n−1)s²/σ₀²</td><td>n−1</td><td>χ²</td></tr>
+        <tr><td>Chi-squared GOF</td><td>equal prop.</td><td>χ₀²=Σ(O−E)²/E</td><td>k−1</td><td>χ²</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 6: TABLES ══ -->
+<div class="pg" id="pg6">
+  <div class="sec-hdr">
+    <h2>Which Table to Use</h2>
+    <p>Z · t · χ² · F — exact lookup instructions for each table used in class.</p>
+    <div class="acc" style="background:linear-gradient(90deg,var(--blue-solid),var(--amber-solid),var(--red-solid),var(--gray-solid))"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--blue-solid)">
+      <div class="card-hdr"><span class="badge b-blue">Z-table (Table III)</span><span class="card-sub">Φ(z) = P(Z ≤ z)</span></div>
+      <div class="lbl">Use for</div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Normal distribution probabilities</div></div>
+      <div class="flag"><div class="fdot fd-b"></div><div>CI critical values when σ is known</div></div>
+      <div class="flag"><div class="fdot fd-b"></div><div>Finding percentiles: x = μ + z·σ</div></div>
+      <div class="div"></div>
+      <div class="lbl">How to read</div>
+      <div class="formula">Row = integer + tenths (e.g. 1.3)
+Col = hundredths (e.g. 0.05 → 1.35)
+Entry = Φ(z) = P(Z ≤ z)</div>
+      <div class="div"></div>
+      <div class="lbl">Key values (memorise these)</div>
+      <div class="formula">Φ(1.282)=0.90  → z_{0.10}=1.282
+Φ(1.645)=0.95  → z_{0.05}=1.645
+Φ(1.960)=0.975 → z_{0.025}=1.960
+Φ(2.326)=0.99  → z_{0.01}=2.326
+Φ(2.576)=0.995 → z_{0.005}=2.576</div>
+      <div class="div"></div>
+      <div class="lbl">Common operations</div>
+      <div class="formula">P(Z&gt;z)   = 1 − Φ(z)
+P(Z&lt;−z)  = 1 − Φ(z)    ← symmetry
+P(−z&lt;Z&lt;z) = 2Φ(z) − 1</div>
+      <div class="tip">Table gives cumulative LEFT-tail area. Everything to the left of z.</div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--amber-solid)">
+      <div class="card-hdr"><span class="badge b-amber">t-table (Table V)</span><span class="card-sub">t_{α, ν}</span></div>
+      <div class="lbl">Use for</div>
+      <div class="flag"><div class="fdot fd-a"></div><div>CI on μ when σ unknown</div></div>
+      <div class="flag"><div class="fdot fd-a"></div><div>One-sample and two-sample t-tests</div></div>
+      <div class="div"></div>
+      <div class="lbl">How to read</div>
+      <div class="formula">Row = ν (degrees of freedom)
+Col = α (RIGHT-TAIL area)
+
+For two-sided CI at 95%:
+  α/2=0.025 → look at col 0.025
+For one-sided test at α=0.05:
+  look at col 0.05</div>
+      <div class="div"></div>
+      <div class="lbl">d.f. quick reference</div>
+      <div class="formula">One-sample:   ν = n−1
+Two-sample (equal var): ν = n₁+n₂−2
+Chi-squared test:  ν = n−1
+GOF test:  ν = k−1</div>
+      <div class="div"></div>
+      <div class="lbl">As ν → ∞, t → z</div>
+      <div class="formula">ν=∞ row in t-table = z values
+t_{0.025,∞} = 1.960 = z_{0.025}</div>
+      <div class="tip a">For very large n, t-values approach z-values. But always use t if σ is unknown — even for large n.</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top: 4px solid var(--red-solid)">
+      <div class="card-hdr"><span class="badge b-red">χ²-table (Table IV)</span><span class="card-sub">χ²_{α, ν}</span></div>
+      <div class="lbl">Use for</div>
+      <div class="flag"><div class="fdot fd-r"></div><div>CI on σ² — need TWO values from this table</div></div>
+      <div class="flag"><div class="fdot fd-r"></div><div>Chi-squared hypothesis test on variance</div></div>
+      <div class="flag"><div class="fdot fd-r"></div><div>Goodness-of-fit tests (proportions)</div></div>
+      <div class="div"></div>
+      <div class="lbl">How to read</div>
+      <div class="formula">Row = ν (degrees of freedom)
+Col = α (RIGHT-TAIL area)
+
+For two-sided CI at 95% (α=0.05):
+  Upper crit: χ²_{0.025,ν}  (right-tail = 0.025)
+  Lower crit: χ²_{0.975,ν}  (right-tail = 0.975)
+NOTE: lower crit &lt; upper crit always!</div>
+      <div class="div"></div>
+      <div class="lbl">Two-sided CI assembly</div>
+      <div class="formula">Lower bound of σ²: (n−1)s² / χ²_{0.025,ν}
+Upper bound of σ²: (n−1)s² / χ²_{0.975,ν}
+⚠ Bigger χ² → smaller CI bound (reciprocal)</div>
+      <div class="tip r">The χ² distribution is skewed right — not symmetric. Using one critical value for both ends is WRONG.</div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--gray-solid)">
+      <div class="card-hdr"><span class="badge b-gray">F-table (Table VI)</span><span class="card-sub">f_{α, ν₁, ν₂}</span></div>
+      <div class="lbl">Use for</div>
+      <div class="flag"><div class="fdot fd-gr"></div><div>F-test: comparing two variances</div></div>
+      <div class="flag"><div class="fdot fd-gr"></div><div>Deciding pooled vs Welch t-test</div></div>
+      <div class="div"></div>
+      <div class="lbl">How to read</div>
+      <div class="formula">Row = ν₂ = n₂−1  (denominator d.f.)
+Col = ν₁ = n₁−1  (numerator d.f.)
+Separate tables for α=0.05 and α=0.025
+
+Two-sided test at α=0.10:
+  → use α=0.05 table (α/2=0.05)</div>
+      <div class="div"></div>
+      <div class="lbl">F-statistic construction</div>
+      <div class="formula">F₀ = s₁²/s₂²
+Convention: put the LARGER variance
+on top so F₀ ≥ 1 (right-tail only)</div>
+      <div class="tip">Table only gives upper-tail critical values. For two-sided, use the α/2 table. For the lower tail: f_{1−α,ν₁,ν₂} = 1/f_{α,ν₂,ν₁}.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="badge b-gray">Master Decision Table</span></div>
+    <div style="overflow-x:auto">
+    <table class="cmp-table">
+      <thead><tr><th>Situation</th><th>Table</th><th>Row</th><th>Column</th><th>Entry gives</th></tr></thead>
+      <tbody>
+        <tr><td>Normal probability  P(Z≤z)</td><td><span class="tag b-blue">Z</span></td><td>integer+tenths of z</td><td>hundredths of z</td><td>Φ(z) = cumulative prob</td></tr>
+        <tr><td>t critical value (CI or test)</td><td><span class="tag b-amber">t</span></td><td>ν = n−1</td><td>α (tail area, e.g. 0.025)</td><td>t_{α,ν}</td></tr>
+        <tr><td>χ² critical value (variance)</td><td><span class="tag b-red">χ²</span></td><td>ν = n−1</td><td>α (right-tail area)</td><td>χ²_{α,ν}</td></tr>
+        <tr><td>F critical value (F-test)</td><td><span class="tag b-gray">F</span></td><td>ν₂ = n₂−1</td><td>ν₁ = n₁−1</td><td>f_{α,ν₁,ν₂}</td></tr>
+        <tr><td>Percentile (inverse normal)</td><td><span class="tag b-blue">Z</span></td><td>search body for prob</td><td>read z from row+col</td><td>z such that Φ(z)=p</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function show(i){
+  document.querySelectorAll('.pg').forEach((p,j)=>{
+    p.classList.toggle('active',j===i);
+  });
+  document.querySelectorAll('.tab').forEach((t,j)=>{
+    t.classList.toggle('on',j===i);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
